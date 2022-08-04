@@ -1,18 +1,44 @@
 import { useState, FormEvent, ChangeEvent, InvalidEvent } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { PlusCircle } from 'phosphor-react';
 import Clipboard from '../assets/Clipboard.png';
 import styles from './NewTaskBar.module.css';
-import Tasks from './Task';
+import TaskCard from './TaskCard';
+
+type TaskProps = {
+  id: string;
+  task: string;
+  isTaskFinished: boolean;
+};
 
 function NewTaskBar() {
-  const [taskContent, setTaskContent] = useState(['Primeira Tarefa']);
+  const [taskContent, setTaskContent] = useState<TaskProps[]>([]);
   const [newTask, setNewTask] = useState('');
 
   function handleCreateNewTask(event: FormEvent) {
     event.preventDefault();
 
-    setTaskContent([...taskContent, newTask]);
+    if (newTask.trim() === '') return;
+
+    const newTodo: TaskProps = {
+      id: uuidv4(),
+      task: newTask,
+      isTaskFinished: false,
+    };
+
+    setTaskContent([...taskContent, newTodo]);
     setNewTask('');
+  }
+
+  function handleChangeFinishedTask(id: string) {
+    const updateTaskWithSameId = taskContent.map((task) => {
+      if (task.id === id) {
+        return { ...task, isTaskFinished: !task.isTaskFinished };
+      }
+      return task;
+    });
+
+    setTaskContent(updateTaskWithSameId);
   }
 
   function handleNewTaskChange(event: ChangeEvent<HTMLInputElement>) {
@@ -24,17 +50,15 @@ function NewTaskBar() {
     event.target.setCustomValidity('Este campo é obrigatório!');
   }
 
-  function deleteTask(taskToDelete: string) {
-    const taskWithoutDeletedOne = taskContent.filter((task) => {
-      return task !== taskToDelete;
-    });
+  function handleDeleteTaskById(taskIdToDelete: string) {
+    const taskWithoutDeletedOne = taskContent.filter((task) => task.id !== taskIdToDelete);
 
     setTaskContent(taskWithoutDeletedOne);
   }
 
   const isNewTaskEmpty = newTask.length === 0;
   const NumberOfTasksCreated = taskContent.length;
-  const NumberOfTasksCompleted = taskContent.filter((task) => task.length);
+  const NumberOfTasksCompleted = taskContent.filter((task) => task.isTaskFinished).length;
 
   console.log(NumberOfTasksCompleted);
 
@@ -62,13 +86,23 @@ function NewTaskBar() {
           </div>
           <div className={styles.infoContainer}>
             <span>Concluídas</span>
-            <span className={styles.taskCompleted}>0 de {NumberOfTasksCreated}</span>
+            <span className={styles.taskCompleted}>
+              {NumberOfTasksCompleted} de {NumberOfTasksCreated}
+            </span>
           </div>
         </div>
         {taskContent.length > 0 ? (
           <div>
             {taskContent.map((taskContent) => {
-              return <Tasks key={taskContent} content={taskContent} onDeleteTask={deleteTask} />;
+              return (
+                <TaskCard
+                  id={taskContent.id}
+                  onChangeFinishedTask={handleChangeFinishedTask}
+                  onDeleteTask={handleDeleteTaskById}
+                  isTaskFinished={taskContent.isTaskFinished}
+                  content={taskContent.task}
+                />
+              );
             })}
           </div>
         ) : (
