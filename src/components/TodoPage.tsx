@@ -1,9 +1,10 @@
 import { useState, FormEvent, ChangeEvent, InvalidEvent } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { PlusCircle } from 'phosphor-react';
 import Clipboard from '../assets/Clipboard.png';
-import styles from './NewTaskBar.module.css';
+import styles from './TodoPage.module.css';
 import TaskCard from './TaskCard';
+import NewTaskBar from './NewTaskBar';
+import { PlusCircle } from 'phosphor-react';
 
 type TaskProps = {
   id: string;
@@ -11,7 +12,7 @@ type TaskProps = {
   isTaskFinished: boolean;
 };
 
-function NewTaskBar() {
+function TodoPage() {
   const [taskContent, setTaskContent] = useState<TaskProps[]>([]);
   const [newTask, setNewTask] = useState('');
 
@@ -59,8 +60,6 @@ function NewTaskBar() {
   const isNewTaskEmpty = newTask.length === 0;
   const NumberOfTasksCreated = taskContent.length;
   const NumberOfTasksCompleted = taskContent.filter((task) => task.isTaskFinished).length;
-
-  console.log(NumberOfTasksCompleted);
 
   return (
     <div className={styles.main}>
@@ -119,4 +118,4 @@ function NewTaskBar() {
   );
 }
 
-export default NewTaskBar;
+export default TodoPage;

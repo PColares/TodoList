@@ -1,12 +1,12 @@
 import Header from './components/Header';
-import NewTaskBar from './components/NewTaskBar';
+import TodoPage from './components/TodoPage';
 import './global.css';
 
 function App() {
   return (
     <div>
       <Header />
-      <NewTaskBar />
+      <TodoPage />
     </div>
   );
 }
