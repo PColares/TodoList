@@ -16,8 +16,6 @@ function TaskCard({
   isTaskFinished,
   onChangeFinishedTask,
 }: TaskCardProps) {
-  // const [isChecked, setIsChecked] = useState(false);
-
   function handleDeleteTaskById(event: React.MouseEvent<HTMLButtonElement>) {
     event?.stopPropagation();
     onDeleteTask(id);
@@ -26,10 +24,6 @@ function TaskCard({
   function handleChangeFinishedTask() {
     onChangeFinishedTask(id);
   }
-
-  // function handleCheckbox() {
-  //   setIsChecked(!isChecked);
-  // }
 
   return (
     <div className={isTaskFinished ? styles.taskIsChecked : undefined}>
